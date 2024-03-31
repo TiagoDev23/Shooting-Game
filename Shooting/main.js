@@ -2,6 +2,13 @@
 var scene, camera, renderer, mesh, clock;
 var meshFloor, ambientLight, light;
 
+var collisionSound;
+var bulletSound;
+var backgroundSound;
+
+collisionSound = new Audio('563528__vibinchillin__box-break_mixdown.wav');
+bulletSound = new Audio('161195__aleksnascimento__glock-shot-sound-effect.wav');
+
 // Variáveis relacionadas à textura de uma caixa
 var crate, crateTexture, crateNormalMap, crateBumpMap;
 
@@ -40,6 +47,13 @@ var bullets = [];
 
 // Função de inicialização da cena
 function init() {
+
+    // som de fundo
+    // backgroundSound = new Audio('Rain.mp3');
+    // backgroundSound.loop = true; // Define o som para loop
+    // backgroundSound.volume = 0.2; // Define o volume do som (0 a 1)
+    // backgroundSound.play(); // Inicia a reprodução do som de fundo
+
     // Inicialização da cena, câmera e relógio
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -247,6 +261,8 @@ function animate() {
 
         bullets.push(bullet);
         scene.add(bullet);
+        bulletSound.volume = 0.2;
+        bulletSound.play();
         player.canShoot = 10;
     }
     if (player.canShoot > 0) player.canShoot -= 1;
@@ -276,6 +292,7 @@ function animate() {
             var newX = Math.random() * 8 - 4; // Gera uma posição X aleatória dentro da base
             var newZ = Math.random() * 8 - 4; // Gera uma posição Z aleatória dentro da base
             crate.position.set(newX, 1.5, newZ);
+            collisionSound.play();
         }
     }
 
