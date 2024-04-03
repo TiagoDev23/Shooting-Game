@@ -46,9 +46,8 @@ var meshes = {};
 var bullets = [];
 
 // Função de inicialização da cena
-function init() {
+function init() { 
 
-    // som de fundo
     // backgroundSound = new Audio('Rain.mp3');
     // backgroundSound.loop = true; // Define o som para loop
     // backgroundSound.volume = 0.2; // Define o volume do som (0 a 1)
@@ -96,12 +95,12 @@ function init() {
     ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(ambientLight);
 
-    light = new THREE.PointLight(0xffffff, 0.8, 18);
-    light.position.set(-3, 6, -3);
-    light.castShadow = true;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 25;
-    scene.add(light);
+    // light = new THREE.PointLight(0xffffff, 0.8, 18);
+    // light.position.set(-3, 6, -3);
+    // light.castShadow = true;
+    // light.shadow.camera.near = 0.1;
+    // light.shadow.camera.far = 25;
+    // scene.add(light);
 
     // Carregamento de texturas para a caixa
     var textureLoader = new THREE.TextureLoader(loadingManager);
