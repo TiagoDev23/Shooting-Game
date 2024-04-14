@@ -1,6 +1,7 @@
 // Declaração de variáveis para os elementos da cena
 var scene, camera, renderer, mesh, clock;
 var meshFloor, ambientLight, light;
+var rainGeo, rainMaterial, rainCount = 15000;
 
 var collisionSound;
 var bulletSound;
@@ -95,12 +96,12 @@ function init() {
     ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(ambientLight);
 
-    // light = new THREE.PointLight(0xffffff, 0.8, 18);
-    // light.position.set(-3, 6, -3);
-    // light.castShadow = true;
-    // light.shadow.camera.near = 0.1;
-    // light.shadow.camera.far = 25;
-    // scene.add(light);
+    light = new THREE.PointLight(0xffffff, 0.8, 18);
+    light.position.set(-3, 6, -3);
+    light.castShadow = true;
+    light.shadow.camera.near = 0.1;
+    light.shadow.camera.far = 25;
+    scene.add(light);
 
     // Carregamento de texturas para a caixa
     var textureLoader = new THREE.TextureLoader(loadingManager);
@@ -161,6 +162,27 @@ function init() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.BasicShadowMap;
     document.body.appendChild(renderer.domElement);
+
+    //chuva
+    rainGeo = new THREE.Geometry();
+    for(let i=0;i<rainCount;i++) {
+        rainDrop = new THREE.Vector3(
+        Math.random() * 400 -200,
+        Math.random() * 500 - 250,
+        Math.random() * 400 - 200
+    );
+    rainDrop.velocity = {};
+    rainDrop.velocity = 0;
+    rainGeo.vertices.push(rainDrop);
+    }
+
+    rainMaterial = new THREE.PointsMaterial({
+        color: 0xaaaaaa,
+        size: 0.1,
+        transparent: true
+      });
+      rain = new THREE.Points(rainGeo,rainMaterial);
+      scene.add(rain);
 
     // Chamada da função de animação
     animate();
@@ -246,11 +268,7 @@ function animate() {
             meshes["playerweapon"].position.z
         );
 
-        bullet.velocity = new THREE.Vector3(
-            -Math.sin(camera.rotation.y),
-            0,
-            Math.cos(camera.rotation.y)
-        );
+        bullet.velocity = new THREE.Vector3(-Math.sin(camera.rotation.y),0,Math.cos(camera.rotation.y));
 
         bullet.alive = true;
         setTimeout(function () {
@@ -288,12 +306,23 @@ function animate() {
             scene.remove(bullets[index]);
             bullets[index].alive = false;
             // Respawn da caixa em um novo local dentro da base
-            var newX = Math.random() * 8 - 4; // Gera uma posição X aleatória dentro da base
-            var newZ = Math.random() * 8 - 4; // Gera uma posição Z aleatória dentro da base
+            var newX = Math.random() * 16 - 8; // Gera uma posição X aleatória dentro da base
+            var newZ = Math.random() * 16 - 8; // Gera uma posição Z aleatória dentro da base
             crate.position.set(newX, 1.5, newZ);
             collisionSound.play();
         }
     }
+    //chuva
+    rainGeo.vertices.forEach(p => {
+        p.velocity -= 0.01 + Math.random() * 0.01;
+        p.y += p.velocity;
+        if (p.y < -200) {
+          p.y = 200;
+          p.velocity = 0;
+        }
+      });
+      rainGeo.verticesNeedUpdate = true;
+      rain.rotation.y +=0.002;
 
     // Renderização da cena
     renderer.render(scene, camera);
